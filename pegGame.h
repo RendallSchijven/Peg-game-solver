@@ -11,7 +11,7 @@
 #include <set>
 
 enum class Move { l, r, ur, ul, dr, dl };
-using State = std::array<std::array<int,3>,3>;
+using State = std::array<std::array<int,5>,5>;
 
 using Vertex = State;
 using Path = std::vector<Vertex>;
@@ -27,7 +27,7 @@ private:
 
 std::ostream &operator<<(std::ostream &os, const Vertex &state);
 
-Vertex doMove(const Vertex &v, const Move &m);
+Vertex doMove(const Vertex &v, const Move &m, int r, int c);
 Path dfs(const Graph &graph, const Vertex &start, std::function<bool(const Vertex &vertex)> goalTest);
 Path bfs(const Graph &graph, const Vertex &start, std::function<bool(const Vertex &vertex)> goalTest);
 

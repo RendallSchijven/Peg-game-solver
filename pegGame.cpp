@@ -10,13 +10,15 @@ typename std::vector<Vertex>::const_iterator Graph::cbegin(Vertex v) const
 {
     adjacents.clear();
 
-    for (int r=0; r<3; r++) {
-        for (int c=0; c<3; c++) {
-            if (v[r][c] == 0) {
-                if (c<2) adjacents.push_back(doMove(v,Move::l));
-                if (c>0) adjacents.push_back(doMove(v,Move::r));
-                if (r<2) adjacents.push_back(doMove(v,Move::u));
-                if (r>0) adjacents.push_back(doMove(v,Move::d));
+    for (int r=0; r<5; r++) {
+        for (int c=0; c<5; c++) {
+            if (v[r][c] == 2) {
+                if (v[r][c - 2] == 1 && v[r][c - 1] == 2) adjacents.push_back(doMove(v,Move::l,r,c));
+                if (v[r][c + 2] == 1 && v[r][c + 1] == 2) adjacents.push_back(doMove(v,Move::r,r,c));
+                if (v[r-2][c + 2] == 1 && v[r-1][c + 1] == 2) adjacents.push_back(doMove(v,Move::ur,r,c));
+                if (v[r-2][c] == 1 && v[r-1][c] == 2) adjacents.push_back(doMove(v,Move::ul,r,c));
+                if (v[r+2][c] == 1 && v[r+1][c] == 2) adjacents.push_back(doMove(v,Move::dr,r,c));
+                if (v[r+2][c - 2] == 1 && v[r + 1][c - 1] == 2) adjacents.push_back(doMove(v,Move::dl,r,c));
             }
         }
     }
@@ -28,30 +30,88 @@ typename std::vector<Vertex>::const_iterator Graph::cend() const
     return adjacents.cend();
 }
 
-Vertex doMove(const Vertex &v, const Move &m)
+Vertex doMove(const Vertex &v, const Move &m, int r, int c)
+{
+    Vertex n = v;
+
+    switch(m) {
+        case Move::l:
+            std::swap(n[r][c], n[r][c - 2]);
+            n[r][c - 1] = 1;
+            break;
+        case Move::r:
+            std::swap(n[r][c], n[r][c + 2]);
+            n[r][c + 1] = 1;
+            break;
+        case Move::ur:
+            std::swap(n[r][c], n[r - 2][c + 2]);
+            n[r-1][c + 1] = 1;
+            break;
+        case Move::ul:
+            std::swap(n[r][c], n[r - 2][c]);
+            n[r-1][c] = 1;
+            break;
+        case Move::dr:
+            std::swap(n[r][c], n[r + 2][c]);
+            n[r+1][c] = 1;
+            break;
+        case Move::dl:
+            std::swap(n[r][c], n[r + 2][c - 2]);
+            n[r + 1][c - 1] = 1;
+            break;
+    }
+    return n;
+}
+/*Vertex doMove(const Vertex &v, const Move &m, int row, int column)
 {
     bool done=false;
     Vertex n = v;
 
-    for (int r=0; r<3 && !done; r++) {
-        for (int c=0; c<3 && !done; c++) {
+    for (int r=0; r<5 && !done; r++) {
+        for (int c=0; c<5 && !done; c++) {
             if (v[r][c] == 0) {
                 switch(m) {
-                    case Move::l: std::swap(n[r][c], n[r][c+1]); done = true; break;
-                    case Move::r: std::swap(n[r][c], n[r][c-1]); done = true; break;
-                    case Move::u: std::swap(n[r+1][c], n[r][c]); done = true; break;
-                    case Move::d: std::swap(n[r-1][c], n[r][c]); done = true; break;
+                    case Move::l:
+                        std::swap(n[r][c], n[r][c - 2]);
+                        n[r][c - 1] = 1;
+                        done = true;
+                        break;
+                    case Move::r:
+                        std::swap(n[r][c], n[r][c + 2]);
+                        n[r][c + 1] = 1;
+                        done = true;
+                        break;
+                    case Move::ur:
+                        std::swap(n[r][c], n[r - 2][c + 2]);
+                        n[r-1][c + 1] = 1;
+                        done = true;
+                        break;
+                    case Move::ul:
+                        std::swap(n[r][c], n[r - 2][c]);
+                        n[r-1][c] = 1;
+                        done = true;
+                        break;
+                    case Move::dr:
+                        std::swap(n[r][c], n[r + 2][c]);
+                        n[r+1][c] = 1;
+                        done = true;
+                        break;
+                    case Move::dl:
+                        std::swap(n[r][c], n[r + 2][c - 2]);
+                        n[r + 1][c - 1] = 1;
+                        done = true;
+                        break;
                 }
             }
         }
     }
     return n;
-}
+}*/
 
 std::ostream &operator<<(std::ostream &os, const Vertex &state)
 {
-    for (int r=0; r<3; r++) {
-        for (int c=0; c<3; c++) {
+    for (int r=0; r<5; r++) {
+        for (int c=0; c<5; c++) {
             if (state[r][c] != 0) {
                 os << state[r][c];
             } else {
@@ -133,15 +193,19 @@ int main()
     Graph graph;
 
     Vertex start = {{
-                            {{1,2,3}},
-                            {{7,0,4}},
-                            {{8,6,5}}
+                            {{0,0,0,0,1}},
+                            {{0,0,0,2,2}},
+                            {{0,0,2,2,2}},
+                            {{0,2,2,2,2}},
+                            {{2,2,2,2,2}}
                     }};
 
     Vertex goal = {{
-                           {{1,2,3}},
-                           {{4,5,6}},
-                           {{7,8,0}}
+                           {{0,0,0,0,1}},
+                           {{0,0,0,1,1}},
+                           {{0,0,1,1,1}},
+                           {{0,1,1,2,1}},
+                           {{1,1,1,1,1}}
                    }};
 
     Path path = bfs(graph, start, [&](Vertex v) { return (v == goal); });
