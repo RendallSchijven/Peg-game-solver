@@ -4,6 +4,7 @@
 #include <string>
 #include <algorithm>
 #include <iostream>
+#include<ctime>
 #include "pegGame.h"
 
 typename std::vector<Vertex>::const_iterator Graph::cbegin(Vertex v) const
@@ -34,30 +35,12 @@ Vertex doMove(const Vertex &v, const Move &m, int r, int c) {
     Vertex n = v;
 
     switch (m) {
-        case Move::l:
-            std::swap(n[r][c], n[r][c - 2]);
-            n[r][c - 1] = 1;
-            break;
-        case Move::r:
-            std::swap(n[r][c], n[r][c + 2]);
-            n[r][c + 1] = 1;
-            break;
-        case Move::ur:
-            std::swap(n[r][c], n[r - 2][c + 2]);
-            n[r - 1][c + 1] = 1;
-            break;
-        case Move::ul:
-            std::swap(n[r][c], n[r - 2][c]);
-            n[r - 1][c] = 1;
-            break;
-        case Move::dr:
-            std::swap(n[r][c], n[r + 2][c]);
-            n[r + 1][c] = 1;
-            break;
-        case Move::dl:
-            std::swap(n[r][c], n[r + 2][c - 2]);
-            n[r + 1][c - 1] = 1;
-            break;
+        case Move::l: std::swap(n[r][c], n[r][c - 2]); n[r][c - 1] = 1; break;
+        case Move::r: std::swap(n[r][c], n[r][c + 2]); n[r][c + 1] = 1; break;
+        case Move::ur: std::swap(n[r][c], n[r - 2][c + 2]); n[r - 1][c + 1] = 1; break;
+        case Move::ul: std::swap(n[r][c], n[r - 2][c]); n[r - 1][c] = 1;break;
+        case Move::dr: std::swap(n[r][c], n[r + 2][c]); n[r + 1][c] = 1; break;
+        case Move::dl: std::swap(n[r][c], n[r + 2][c - 2]); n[r + 1][c - 1] = 1; break;
     }
     return n;
 }
@@ -68,8 +51,6 @@ std::ostream &operator<<(std::ostream &os, const Vertex &state)
         for (int c=0; c<5; c++) {
             if (state[r][c] != 0) {
                 os << state[r][c];
-            } else {
-                os << " ";
             }
         }
         os << std::endl;
@@ -142,8 +123,10 @@ Path bfs(const Graph &graph, const Vertex &start, std::function<bool(const Verte
     return Path(); // return empty path
 }
 
-int pegsLeft(Vertex &v)
+/*This function checks how many pegs are left, if this is 1 the game is finished*/
+bool finished(Vertex &v)
 {
+    bool finished = false;
     int result = 0;
     Vertex n = v;
     for (int r=0; r<5; r++) {
@@ -153,16 +136,20 @@ int pegsLeft(Vertex &v)
             }
         }
     }
-    return result;
+    if(result == 1) finished = true;
+    return finished;
 }
 
+/*Function that randomly sets the empty hole in the start grid*/
 Vertex updateStart(Vertex &v)
 {
+    std::srand(std::time(0));
+
     Vertex n = v;
     bool finish = false;
     while(!finish){
-        int randRow = rand() % 5;
-        int randCol = rand() % 5;
+        int randRow = std::rand() % 5;
+        int randCol = std::rand() % 5;
         if(n[randRow][randCol] == 2) {
             n[randRow][randCol] = 1;
             finish = true;
@@ -175,6 +162,8 @@ int main()
 {
     Graph graph;
 
+    /*The starting grid, 2 represents a peg, 1 represents an empty spot
+      and 0 represents nothing and is just needed for movement purposes*/
     Vertex start = {{
                             {{0,0,0,0,2}},
                             {{0,0,0,2,2}},
@@ -185,9 +174,7 @@ int main()
 
     start = updateStart(start);
 
-    //Path path = bfs(graph, start, [&](Vertex v) { return (v == goal); });
-    Path path = bfs(graph, start, [&](Vertex v) { return (pegsLeft(v) == 1); });
-
+    Path path = bfs(graph, start, [&](Vertex v) { return (finished(v)); });
 
     std::cout << start << std::endl;
     for (auto it = path.cbegin(); it != path.cend(); it++)

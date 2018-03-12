@@ -30,6 +30,8 @@ std::ostream &operator<<(std::ostream &os, const Vertex &state);
 Vertex doMove(const Vertex &v, const Move &m, int r, int c);
 Path dfs(const Graph &graph, const Vertex &start, std::function<bool(const Vertex &vertex)> goalTest);
 Path bfs(const Graph &graph, const Vertex &start, std::function<bool(const Vertex &vertex)> goalTest);
+bool finished(Vertex &v);
+Vertex updateStart(Vertex &v);
 
 #endif // _PEGGAME_H
 
