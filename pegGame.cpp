@@ -30,11 +30,10 @@ typename std::vector<Vertex>::const_iterator Graph::cend() const
     return adjacents.cend();
 }
 
-Vertex doMove(const Vertex &v, const Move &m, int r, int c)
-{
+Vertex doMove(const Vertex &v, const Move &m, int r, int c) {
     Vertex n = v;
 
-    switch(m) {
+    switch (m) {
         case Move::l:
             std::swap(n[r][c], n[r][c - 2]);
             n[r][c - 1] = 1;
@@ -45,15 +44,15 @@ Vertex doMove(const Vertex &v, const Move &m, int r, int c)
             break;
         case Move::ur:
             std::swap(n[r][c], n[r - 2][c + 2]);
-            n[r-1][c + 1] = 1;
+            n[r - 1][c + 1] = 1;
             break;
         case Move::ul:
             std::swap(n[r][c], n[r - 2][c]);
-            n[r-1][c] = 1;
+            n[r - 1][c] = 1;
             break;
         case Move::dr:
             std::swap(n[r][c], n[r + 2][c]);
-            n[r+1][c] = 1;
+            n[r + 1][c] = 1;
             break;
         case Move::dl:
             std::swap(n[r][c], n[r + 2][c - 2]);
@@ -62,51 +61,6 @@ Vertex doMove(const Vertex &v, const Move &m, int r, int c)
     }
     return n;
 }
-/*Vertex doMove(const Vertex &v, const Move &m, int row, int column)
-{
-    bool done=false;
-    Vertex n = v;
-
-    for (int r=0; r<5 && !done; r++) {
-        for (int c=0; c<5 && !done; c++) {
-            if (v[r][c] == 0) {
-                switch(m) {
-                    case Move::l:
-                        std::swap(n[r][c], n[r][c - 2]);
-                        n[r][c - 1] = 1;
-                        done = true;
-                        break;
-                    case Move::r:
-                        std::swap(n[r][c], n[r][c + 2]);
-                        n[r][c + 1] = 1;
-                        done = true;
-                        break;
-                    case Move::ur:
-                        std::swap(n[r][c], n[r - 2][c + 2]);
-                        n[r-1][c + 1] = 1;
-                        done = true;
-                        break;
-                    case Move::ul:
-                        std::swap(n[r][c], n[r - 2][c]);
-                        n[r-1][c] = 1;
-                        done = true;
-                        break;
-                    case Move::dr:
-                        std::swap(n[r][c], n[r + 2][c]);
-                        n[r+1][c] = 1;
-                        done = true;
-                        break;
-                    case Move::dl:
-                        std::swap(n[r][c], n[r + 2][c - 2]);
-                        n[r + 1][c - 1] = 1;
-                        done = true;
-                        break;
-                }
-            }
-        }
-    }
-    return n;
-}*/
 
 std::ostream &operator<<(std::ostream &os, const Vertex &state)
 {
@@ -188,27 +142,52 @@ Path bfs(const Graph &graph, const Vertex &start, std::function<bool(const Verte
     return Path(); // return empty path
 }
 
+int pegsLeft(Vertex &v)
+{
+    int result = 0;
+    Vertex n = v;
+    for (int r=0; r<5; r++) {
+        for (int c=0; c<5; c++) {
+            if (v[r][c] == 2) {
+                result++;
+            }
+        }
+    }
+    return result;
+}
+
+Vertex updateStart(Vertex &v)
+{
+    Vertex n = v;
+    bool finish = false;
+    while(!finish){
+        int randRow = rand() % 5;
+        int randCol = rand() % 5;
+        if(n[randRow][randCol] == 2) {
+            n[randRow][randCol] = 1;
+            finish = true;
+        }
+    }
+    return n;
+}
+
 int main()
 {
     Graph graph;
 
     Vertex start = {{
-                            {{0,0,0,0,1}},
+                            {{0,0,0,0,2}},
                             {{0,0,0,2,2}},
                             {{0,0,2,2,2}},
                             {{0,2,2,2,2}},
                             {{2,2,2,2,2}}
                     }};
 
-    Vertex goal = {{
-                           {{0,0,0,0,1}},
-                           {{0,0,0,1,1}},
-                           {{0,0,1,1,1}},
-                           {{0,1,1,2,1}},
-                           {{1,1,1,1,1}}
-                   }};
+    start = updateStart(start);
 
-    Path path = bfs(graph, start, [&](Vertex v) { return (v == goal); });
+    //Path path = bfs(graph, start, [&](Vertex v) { return (v == goal); });
+    Path path = bfs(graph, start, [&](Vertex v) { return (pegsLeft(v) == 1); });
+
 
     std::cout << start << std::endl;
     for (auto it = path.cbegin(); it != path.cend(); it++)
