@@ -48,13 +48,11 @@ Vertex doMove(const Vertex &v, const Move &m, int r, int c) {
 std::ostream &operator<<(std::ostream &os, const Vertex &state)
 {
     for (int r=0; r<5; r++) {
-        if(r == 0) os << "    ";
-        if(r == 1) os << "   ";
-        if(r == 2) os << "  ";
-        if(r == 3) os << " ";
         for (int c=0; c<5; c++) {
             if (state[r][c] != 0) {
                 os << state[r][c];
+                os << " ";
+            } else{
                 os << " ";
             }
         }
