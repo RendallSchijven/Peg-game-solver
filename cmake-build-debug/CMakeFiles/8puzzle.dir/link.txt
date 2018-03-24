@@ -1,0 +1,1 @@
+/usr/bin/c++.exe -g  -Wl,--enable-auto-import CMakeFiles/8puzzle.dir/8puzzle.cpp.o  -o 8puzzle.exe -Wl,--out-implib,lib8puzzle.dll.a -Wl,--major-image-version,0,--minor-image-version,0 

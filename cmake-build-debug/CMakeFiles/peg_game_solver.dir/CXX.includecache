@@ -1,0 +1,36 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/cygdrive/c/Users/renda/Desktop/Git/peg-game-solver/pegGame.cpp
+queue
+-
+string
+-
+algorithm
+-
+iostream
+-
+ctime
+-
+pegGame.h
+/cygdrive/c/Users/renda/Desktop/Git/peg-game-solver/pegGame.h
+
+/cygdrive/c/Users/renda/Desktop/Git/peg-game-solver/pegGame.h
+array
+-
+vector
+-
+iostream
+-
+functional
+-
+stack
+-
+set
+-
+

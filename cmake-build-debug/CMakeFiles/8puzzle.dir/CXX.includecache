@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/cygdrive/c/Users/renda/Desktop/Git/peg-game-solver/8puzzle.cpp
+queue
+-
+string
+-
+algorithm
+-
+iostream
+-
+8puzzle.h
+/cygdrive/c/Users/renda/Desktop/Git/peg-game-solver/8puzzle.h
+
+/cygdrive/c/Users/renda/Desktop/Git/peg-game-solver/8puzzle.h
+array
+-
+vector
+-
+iostream
+-
+functional
+-
+stack
+-
+set
+-
+

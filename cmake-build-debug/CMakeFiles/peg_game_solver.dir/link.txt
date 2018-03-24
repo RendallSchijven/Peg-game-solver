@@ -1,0 +1,1 @@
+/usr/bin/c++.exe -g  -Wl,--enable-auto-import CMakeFiles/peg_game_solver.dir/pegGame.cpp.o  -o peg_game_solver.exe -Wl,--out-implib,libpeg_game_solver.dll.a -Wl,--major-image-version,0,--minor-image-version,0 
